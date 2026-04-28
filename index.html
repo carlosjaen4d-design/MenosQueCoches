@@ -273,7 +273,7 @@
     <!-- ============================================================
          CONTACTO
          Sección con fondo oscuro — misma estructura que el comparador.
-         El formulario usa Formspree para enviar emails reales.
+         El formulario usa un endpoint propio en Vercel para registrar mensajes reales.
          ============================================================ -->
     <section id="contacto" class="fondo-oscuro">
         <div class="interior">
@@ -288,12 +288,12 @@
 
                     <!--
                         FORMULARIO DE CONTACTO:
-                        - Funciona con Formspree si sustituyes XXXXXXXX por tu endpoint real.
-                        - Si no hay endpoint real, el JavaScript usa mailto como fallback.
+                        - Envía los datos a /api/contact dentro del mismo proyecto.
+                        - El endpoint del servidor registra cada envío de forma privada.
                         novalidate → el navegador no valida — lo hace nuestro JS
                     -->
                     <form id="formulario"
-                          action="https://formspree.io/f/XXXXXXXX"
+                          action="/api/contact"
                           method="POST"
                           data-email-destino="juan.araque2@educa.madrid.org"
                           novalidate>

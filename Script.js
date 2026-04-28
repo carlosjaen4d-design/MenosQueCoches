@@ -321,7 +321,7 @@ function cerrarModal() {
 /* =================================================================
    6. FORMULARIO DE CONTACTO
    Validamos los campos antes de enviar.
-   Si todo está bien, enviamos los datos a Formspree con fetch().
+   Si todo está bien, enviamos los datos a nuestro endpoint en Vercel.
    ================================================================= */
 
 var formulario        = document.getElementById("formulario");
@@ -398,41 +398,33 @@ formulario.addEventListener("submit", async function(evento) {
         return;
     }
 
-    // Todo bien → intentamos enviar a Formspree
+    // Todo bien → intentamos enviar al endpoint de contacto
     estadoFormulario.textContent = "Enviando...";
     estadoFormulario.className   = "";
 
     try {
-        // Si todavía no hay endpoint real de Formspree, usamos un plan B con mailto.
-        // Así el formulario no queda roto al probarlo desde Vercel o desde un móvil.
-        var actionFormulario = formulario.getAttribute("action") || "";
-        var formspreeConfigurado = actionFormulario.indexOf("XXXXXXXX") === -1;
+        var datosFormulario = {
+            nombre: campoNombre.value.trim(),
+            email: campoEmail.value.trim(),
+            mensaje: campoMensaje.value.trim()
+        };
 
-        if (!formspreeConfigurado) {
-            var emailDestino = formulario.dataset.emailDestino || "juan.araque2@educa.madrid.org";
-            var asunto = encodeURIComponent("Contacto desde MenosQueCoches");
-            var cuerpo = encodeURIComponent(
-                "Nombre: " + campoNombre.value.trim() + "\n" +
-                "Email: " + campoEmail.value.trim() + "\n\n" +
-                "Mensaje:\n" + campoMensaje.value.trim()
-            );
-
-            window.location.href = "mailto:" + emailDestino + "?subject=" + asunto + "&body=" + cuerpo;
-            estadoFormulario.textContent = "Se ha abierto tu aplicación de correo para enviar el mensaje.";
-            estadoFormulario.className   = "ok";
-            return;
-        }
-
-        // fetch envía los datos al servidor de Formspree cuando ya está configurado.
         var respuesta = await fetch(formulario.action, {
             method:  "POST",
-            body:    new FormData(formulario),
-            headers: { "Accept": "application/json" }
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(datosFormulario)
+        });
+
+        var resultado = await respuesta.json().catch(function() {
+            return {};
         });
 
         if (respuesta.ok) {
             // El envío funcionó
-            estadoFormulario.textContent = "Mensaje enviado. Te contestaremos pronto.";
+            estadoFormulario.textContent = resultado.message || "Mensaje enviado. Te contestaremos pronto.";
             estadoFormulario.className   = "ok";
             formulario.reset();  // vaciamos el formulario
             // Quitamos los bordes de color de los campos
@@ -440,12 +432,12 @@ formulario.addEventListener("submit", async function(evento) {
                 c.classList.remove("ok-campo", "error-campo");
             });
         } else {
-            throw new Error("Error del servidor");
+            throw new Error(resultado.error || "Error del servidor");
         }
 
     } catch (error) {
         // Algo falló
-        estadoFormulario.textContent = "No se pudo enviar. Revisa la configuración de Formspree o inténtalo desde el email.";
+        estadoFormulario.textContent = "No se pudo enviar el mensaje ahora mismo. Inténtalo de nuevo en unos minutos.";
         estadoFormulario.className   = "error";
     }
 });

@@ -6,8 +6,8 @@
 2. Se mantiene la estructura HTML/CSS/JS original de la tercera entrega.
 3. Se ha añadido una meta descripción básica en el HTML.
 4. Se ha mejorado el formulario de contacto:
-   - Si se configura Formspree cambiando `XXXXXXXX` por el código real, enviará el formulario con `fetch()`.
-   - Si todavía no está configurado Formspree, el formulario abre el correo del usuario con `mailto:` para que no quede inutilizado.
+   - El formulario envía los datos a un endpoint serverless en Vercel (`/api/contact`).
+   - El endpoint crea una incidencia privada en GitHub para guardar cada mensaje sin exponer datos en el repositorio público.
 5. Se han añadido atributos útiles para móvil en los campos del formulario: `autocomplete` e `inputmode="email"`.
 6. Se han añadido pequeños ajustes CSS para imágenes, vídeos, iframes y uso táctil en móvil.
 7. Se ha ajustado `vercel.json` para una publicación estática sencilla.
@@ -28,12 +28,12 @@ Abre `index.html` con Live Server en VS Code. No lo abras directamente con doble
 
 ## Formulario de contacto
 
-Ahora mismo el proyecto funciona con fallback `mailto:`. Para que el formulario envíe mensajes sin abrir el correo del usuario:
+Ahora mismo el formulario queda operativo sin depender de Formspree:
 
-1. Crear cuenta en Formspree.
-2. Crear un formulario nuevo.
-3. Copiar el endpoint, por ejemplo: `https://formspree.io/f/abcd1234`.
-4. En `index.html`, sustituir `https://formspree.io/f/XXXXXXXX` por el endpoint real.
+1. El frontend envía los datos a `/api/contact`.
+2. La función serverless usa variables de entorno en Vercel.
+3. Cada envío se guarda como incidencia privada en `carlosjaen4d-design/MenosQueCoches-contacto`.
+4. El proyecto público `MenosQueCoches` queda separado de los mensajes recibidos.
 
 ## Código QR
 
