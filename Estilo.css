@@ -1,0 +1,999 @@
+/*
+=================================================================
+  ESTILO.CSS — MenosQueCoches
+=================================================================
+
+  ÍNDICE:
+  1.  Variables globales
+  2.  Reset y base
+  3.  Navbar
+  4.  Portada (hero)
+  5.  Secciones y títulos
+  6.  Botones de filtro
+  7.  Tarjetas
+  8.  Comparador
+  9.  Formulario de contacto
+  10. Botones globales
+  11. Footer
+  12. Modal
+  13. Botón volver arriba
+  14. Modos de accesibilidad
+  15. Responsive tablet (max 900px)
+  16. Responsive móvil (max 600px)
+=================================================================
+*/
+
+
+/* Ajustes extra para despliegue y móviles */
+img, video, iframe {
+    max-width: 100%;
+}
+
+button, a, input, textarea {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+textarea {
+    resize: vertical;
+}
+
+/* =================================================================
+   1. VARIABLES GLOBALES
+   ================================================================= */
+:root {
+    --negro:      #0a0a0a;
+    --negro-card: #151515;
+    --rojo:       #9e2321;
+    --dorado:     #d1aa0d;
+    --blanco:     #f0f0f0;
+    --gris:       #999999;
+    --borde:      #333333;
+
+    /* Altura de la navbar — una sola variable para no repetir el número */
+    --alto-navbar: 65px;
+
+    --fuente-titulo: 'Orbitron', sans-serif;
+    --fuente-texto:  'Rajdhani', sans-serif;
+}
+
+
+/* =================================================================
+   2. RESET Y BASE
+   ================================================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    /* Empuja el scroll un poco hacia abajo para que la navbar no tape el título */
+    scroll-padding-top: var(--alto-navbar);
+}
+
+body {
+    font-family:      var(--fuente-texto);
+    background-color: var(--negro);
+    color:            var(--blanco);
+    line-height:      1.6;
+    /* Evita el scroll horizontal en móvil */
+    overflow-x: hidden;
+}
+
+body.menu-abierto {
+    overflow: hidden;
+}
+
+
+/* =================================================================
+   3. NAVBAR
+   Siempre visible en la parte de arriba.
+   El JS añade la clase "scroll" cuando el usuario baja.
+   ================================================================= */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--alto-navbar);
+    background-color: rgba(10, 10, 10, 0.96);
+    border-bottom: 1px solid var(--rojo);
+    z-index: 100;
+    transition: box-shadow 0.3s;
+}
+
+.navbar.scroll {
+    box-shadow: 0 2px 20px rgba(158, 35, 33, 0.4);
+}
+
+/* Fila interna: logo | menú */
+.nav-contenedor {
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.logo-img {
+    height: 42px;
+    display: block;
+}
+
+/* Lista de enlaces en fila horizontal */
+.menu {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.menu a {
+    color: var(--blanco);
+    text-decoration: none;
+    font-family: var(--fuente-titulo);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    /* Área de toque de 44px mínimo (accesibilidad) */
+    display: inline-block;
+    padding: 12px 0;
+    transition: color 0.2s;
+}
+
+.menu a:hover {
+    color: var(--dorado);
+}
+
+/* ── Menú desplegable de accesibilidad ── */
+.desplegable {
+    position: relative;
+}
+
+.submenu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background-color: #1c1c1c;
+    list-style: none;
+    min-width: 175px;
+    border: 1px solid var(--borde);
+    border-radius: 4px;
+    overflow: hidden;
+    z-index: 110;
+}
+
+/* En escritorio se abre con hover */
+.desplegable:hover .submenu {
+    display: block;
+}
+
+/* En móvil el JS añade la clase "abierto-sub" para abrirlo con tap */
+.desplegable.abierto-sub .submenu {
+    display: block;
+}
+
+.submenu li button {
+    background: none;
+    border: none;
+    color: var(--blanco);
+    font-family: var(--fuente-texto);
+    font-size: 0.95rem;
+    padding: 12px 16px;
+    min-height: 44px;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.submenu li button:hover {
+    background-color: var(--rojo);
+}
+
+/* ── Botón hamburguesa ── */
+/* Oculto en escritorio — el CSS de móvil lo muestra */
+.btn-hamburguesa {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    /* Área mínima de toque para móvil */
+    padding: 8px;
+    min-width: 44px;
+    min-height: 44px;
+}
+
+.btn-hamburguesa span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background-color: var(--blanco);
+    border-radius: 2px;
+    transition: transform 0.3s, opacity 0.3s;
+}
+
+/* El JS añade "abierto" → las tres líneas se convierten en una X */
+.btn-hamburguesa.abierto span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.btn-hamburguesa.abierto span:nth-child(2) { opacity: 0; }
+.btn-hamburguesa.abierto span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+
+/* =================================================================
+   4. PORTADA (hero)
+   El vídeo de fondo está en la capa 1.
+   El texto está en la capa 2, encima.
+   ================================================================= */
+.hero {
+    position: relative;
+    min-height: calc(100vh - var(--alto-navbar));
+    /* Empujamos el hero hacia abajo para que no quede tapado por la navbar */
+    margin-top: var(--alto-navbar);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-bottom: 2px solid var(--rojo);
+    overflow: hidden;
+}
+
+.hero-video {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.25);
+    z-index: 1;                /* capa 1: detrás */
+}
+
+.hero-texto {
+    position: relative;
+    z-index: 2;                /* capa 2: delante */
+    padding: 40px 24px;
+    max-width: 700px;
+    width: 100%;
+}
+
+.hero-texto h1 {
+    font-family: var(--fuente-titulo);
+    font-size: 3.2rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 16px;
+    /* Color fijo: el vídeo siempre es oscuro, así que el texto siempre es blanco */
+    color: #f0f0f0;
+    word-break: break-word;
+}
+
+.hero-texto p {
+    font-size: 1.15rem;
+    color: #999999;            /* color fijo — no hereda de body */
+    margin-bottom: 30px;
+}
+
+
+/* =================================================================
+   5. SECCIONES Y TÍTULOS
+
+   CÓMO FUNCIONA EL LAYOUT:
+   Las secciones normales usan solo la clase "seccion":
+     <section class="seccion"> → ancho máximo 1100px, centrado
+
+   Las secciones con fondo oscuro usan "fondo-oscuro" + un div.interior dentro:
+     <section class="fondo-oscuro">
+       <div class="interior"> → aquí va el contenido
+
+   Así el fondo llega de borde a borde pero el contenido sigue centrado.
+   ================================================================= */
+
+/* Secciones normales — contenido centrado a 1100px */
+.seccion {
+    padding: 60px 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+/* Secciones con fondo oscuro — la section ocupa el 100% del ancho */
+.fondo-oscuro {
+    background-color: #080808;
+    width: 100%;       /* garantiza que ocupa todo el ancho */
+    display: block;    /* por si acaso hereda otro display */
+}
+
+/* El div interior se comporta exactamente igual que .seccion */
+.interior {
+    max-width: 1100px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 60px 24px;
+}
+
+/* Título de sección con barra roja a la izquierda */
+.titulo-seccion {
+    font-family: var(--fuente-titulo);
+    font-size: 1.8rem;
+    color: var(--rojo);
+    text-transform: uppercase;
+    border-left: 4px solid var(--rojo);
+    padding-left: 15px;
+    margin-bottom: 30px;
+}
+
+
+/* =================================================================
+   6. BOTONES DE FILTRO
+   ================================================================= */
+
+.filtros {
+    display: flex;
+    flex-wrap: wrap;            /* si no caben en línea, bajan a la siguiente */
+    gap: 10px;
+    margin-bottom: 28px;
+}
+
+.btn-filtro {
+    padding: 8px 20px;
+    background-color: transparent;
+    border: 1px solid var(--borde);
+    color: var(--gris);
+    font-family: var(--fuente-titulo);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    min-height: 44px;           /* área de toque mínima */
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.btn-filtro:hover {
+    border-color: var(--rojo);
+    color: var(--blanco);
+}
+
+/* El JS añade "activo" al botón seleccionado */
+.btn-filtro.activo {
+    background-color: var(--rojo);
+    border-color: var(--rojo);
+    color: #ffffff;
+}
+
+
+/* =================================================================
+   7. TARJETAS
+   ================================================================= */
+
+/* Auto-fit: crea tantas columnas como quepan con un mínimo de 260px */
+.grid-tarjetas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+}
+
+.tarjeta {
+    background-color: var(--negro-card);
+    border: 1px solid var(--borde);
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+    width: 100%;
+    transition: transform 0.25s, border-color 0.25s;
+}
+
+.tarjeta:hover {
+    transform: translateY(-4px);
+    border-color: var(--rojo);
+}
+
+.tarjeta-foto {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-bottom: 1px solid var(--borde);
+    display: block;
+}
+
+.tarjeta-info {
+    padding: 16px;
+}
+
+.etiqueta {
+    display: inline-block;
+    font-family: var(--fuente-titulo);
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    color: var(--dorado);
+    border: 1px solid var(--dorado);
+    padding: 2px 8px;
+    margin-bottom: 8px;
+}
+
+.tarjeta-info h3 {
+    font-family: var(--fuente-titulo);
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+    line-height: 1.3;
+}
+
+.tarjeta-info p {
+    color: var(--gris);
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+}
+
+.specs {
+    list-style: none;
+    font-size: 0.85rem;
+    border-top: 1px solid var(--borde);
+    padding-top: 10px;
+    margin-bottom: 12px;
+}
+
+.specs li {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.pie-tarjeta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--borde);
+    padding-top: 12px;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.precio {
+    font-family: var(--fuente-titulo);
+    font-size: 1.05rem;
+    color: var(--dorado);
+}
+
+.btn-comparar {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    padding: 8px;
+    background: transparent;
+    border: 1px solid var(--borde);
+    color: var(--gris);
+    font-family: var(--fuente-titulo);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    min-height: 44px;
+    transition: border-color 0.2s, color 0.2s, background-color 0.2s;
+}
+
+.btn-comparar:hover {
+    border-color: var(--dorado);
+    color: var(--dorado);
+}
+
+/* El JS añade esta clase cuando el coche ya está en el comparador */
+.btn-comparar.en-uso {
+    border-color: var(--rojo);
+    color: var(--rojo);
+    background-color: rgba(158, 35, 33, 0.08);
+}
+
+
+/* =================================================================
+   8. COMPARADOR DE COCHES
+   ================================================================= */
+
+.subtitulo-comparador {
+    color: var(--gris);
+    margin-bottom: 24px;
+    font-size: 0.95rem;
+}
+
+/* Tres columnas en escritorio */
+.comparador-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+/* Hueco vacío */
+.hueco-comparador {
+    border: 2px dashed var(--borde);
+    border-radius: 4px;
+    min-height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gris);
+    font-size: 0.75rem;
+    font-family: var(--fuente-titulo);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+    padding: 16px;
+}
+
+/* El JS añade "lleno" cuando hay un coche */
+.hueco-comparador.lleno {
+    border-style: solid;
+    border-color: var(--borde);
+    background-color: var(--negro-card);
+    display: block;
+    min-height: auto;
+    padding: 0;
+}
+
+.comp-foto {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    display: block;
+    border-bottom: 1px solid var(--borde);
+}
+
+.comp-info { padding: 12px; }
+
+.comp-nombre {
+    font-family: var(--fuente-titulo);
+    font-size: 0.82rem;
+    margin-bottom: 8px;
+    line-height: 1.3;
+}
+
+.comp-tabla {
+    width: 100%;
+    font-size: 0.78rem;
+    border-collapse: collapse;
+    margin-bottom: 10px;
+}
+
+.comp-tabla td {
+    padding: 4px 0;
+    border-bottom: 1px solid var(--borde);
+    color: var(--gris);
+    vertical-align: top;
+}
+
+.comp-tabla td:last-child {
+    text-align: right;
+    color: var(--blanco);
+}
+
+/* El JS añade esta clase al coche con más CV */
+.comp-tabla td.ganador {
+    color: var(--dorado);
+    font-weight: bold;
+}
+
+.comp-quitar {
+    width: 100%;
+    padding: 6px;
+    background: transparent;
+    border: 1px solid var(--borde);
+    color: var(--gris);
+    font-family: var(--fuente-titulo);
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    min-height: 44px;
+    transition: border-color 0.2s, color 0.2s;
+}
+
+.comp-quitar:hover {
+    border-color: var(--rojo);
+    color: var(--rojo);
+}
+
+
+/* =================================================================
+   9. FORMULARIO DE CONTACTO
+   ================================================================= */
+
+/* Dos columnas: formulario | mapa */
+.contacto-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: start;
+}
+
+.contacto-grid h3 {
+    font-family: var(--fuente-titulo);
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+}
+
+.campo { margin-bottom: 16px; }
+
+.campo label {
+    display: block;
+    margin-bottom: 6px;
+    font-family: var(--fuente-titulo);
+    font-size: 0.72rem;
+    color: var(--gris);
+    text-transform: uppercase;
+}
+
+.campo input,
+.campo textarea {
+    width: 100%;
+    padding: 11px 12px;
+    background-color: var(--negro-card);
+    border: 1px solid var(--borde);
+    color: var(--blanco);
+    font-family: var(--fuente-texto);
+    /* font-size mínimo de 16px evita el zoom automático en iOS */
+    font-size: max(16px, 1rem);
+    border-radius: 2px;
+}
+
+.campo input:focus,
+.campo textarea:focus {
+    outline: none;
+    border-color: var(--rojo);
+}
+
+/* Mensaje de error bajo cada campo — el JS lo rellena */
+.error {
+    display: block;
+    color: #e05252;
+    font-size: 0.8rem;
+    margin-top: 4px;
+    min-height: 18px;
+}
+
+.campo input.error-campo,
+.campo textarea.error-campo { border-color: #e05252; }
+.campo input.ok-campo,
+.campo textarea.ok-campo    { border-color: #4caf50; }
+
+#estado-formulario {
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+    min-height: 22px;
+}
+#estado-formulario.ok    { color: #4caf50; }
+#estado-formulario.error { color: #e05252; }
+
+/* Clase para el iframe del mapa — permite controlarlo en responsive */
+.mapa-iframe {
+    width: 100%;
+    height: 220px;
+    border: 0;
+    border-radius: 4px;
+    margin-top: 16px;
+    display: block;
+}
+
+
+/* =================================================================
+   10. BOTONES GLOBALES
+   ================================================================= */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 11px 26px;
+    background-color: var(--rojo);
+    color: #fff;
+    text-decoration: none;
+    font-family: var(--fuente-titulo);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    border: 1px solid var(--rojo);
+    cursor: pointer;
+    border-radius: 2px;
+    min-height: 44px;
+    transition: background 0.25s, color 0.25s;
+}
+
+.btn:hover {
+    background-color: transparent;
+    color: var(--rojo);
+}
+
+.btn-outline {
+    background-color: transparent;
+    border-color: var(--dorado);
+    color: var(--dorado);
+}
+
+.btn-outline:hover {
+    background-color: var(--dorado);
+    color: var(--negro);
+}
+
+
+/* =================================================================
+   11. FOOTER
+   ================================================================= */
+footer {
+    text-align: center;
+    padding: 20px 24px;
+    border-top: 1px solid var(--borde);
+    color: var(--gris);
+    font-size: 0.9rem;
+    background-color: var(--negro-card);
+}
+
+
+/* =================================================================
+   12. MODAL
+   Oculto con display:none. El JS añade "visible" para mostrarlo.
+   ================================================================= */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.87);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    overflow-y: auto;
+}
+
+.modal.visible {
+    display: flex;
+}
+
+.modal-caja {
+    background-color: var(--negro-card);
+    border: 1px solid var(--rojo);
+    border-radius: 4px;
+    width: 100%;
+    max-width: 680px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow: hidden;
+    position: relative;
+    max-height: 90vh;
+}
+
+.modal-cerrar {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 44px;
+    height: 44px;
+    background: rgba(0, 0, 0, 0.6);
+    border: none;
+    border-radius: 50%;
+    color: var(--blanco);
+    font-size: 1.2rem;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.modal-cerrar:hover { background: var(--rojo); }
+
+#modal-foto {
+    width: 100%;
+    height: 100%;
+    min-height: 240px;
+    object-fit: cover;
+    display: block;
+}
+
+.modal-datos {
+    padding: 24px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto;
+}
+
+#modal-titulo {
+    font-family: var(--fuente-titulo);
+    font-size: 1.1rem;
+    line-height: 1.3;
+}
+
+#modal-descripcion {
+    color: var(--gris);
+    font-size: 0.88rem;
+}
+
+
+/* =================================================================
+   13. BOTÓN VOLVER ARRIBA
+   ================================================================= */
+.btn-arriba {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 44px;
+    height: 44px;
+    background-color: var(--rojo);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    z-index: 150;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s, transform 0.3s;
+    transform: translateY(12px);
+}
+
+.btn-arriba.visible {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(0);
+}
+
+.btn-arriba:hover { background-color: #b52b29; }
+
+
+/* =================================================================
+   14. MODOS DE ACCESIBILIDAD
+   El hero siempre mantiene su texto claro porque el vídeo de fondo
+   es siempre oscuro, independientemente del modo.
+   ================================================================= */
+
+/* ── Modo Claro ── */
+body.modo-claro {
+    background-color: #f5f5f5;
+    color: #111111;
+}
+body.modo-claro .tarjeta,
+body.modo-claro .hueco-comparador.lleno,
+body.modo-claro .modal-caja,
+body.modo-claro footer            { background-color: #e4e4e4; color: #111; }
+body.modo-claro .navbar           { background-color: rgba(220,220,220,0.97); }
+body.modo-claro .menu a,
+body.modo-claro .tarjeta-info h3  { color: #111; }
+body.modo-claro .campo input,
+body.modo-claro .campo textarea   { background-color: #fff; border-color: #bbb; color: #111; }
+/* Hero protegido */
+body.modo-claro .hero-texto h1    { color: #f0f0f0; }
+body.modo-claro .hero-texto p     { color: #999999; }
+/* Filtros en modo claro */
+body.modo-claro .btn-filtro       { border-color: #aaa; color: #555; }
+body.modo-claro .btn-filtro.activo{ background-color: var(--rojo); border-color: var(--rojo); color: #fff; }
+
+/* ── Alto Contraste ── */
+body.modo-contraste               { background-color: #000; color: #ffff00; }
+body.modo-contraste .tarjeta      { border: 1px solid #ffff00; }
+body.modo-contraste .navbar       { background-color: #000; border-bottom: 2px solid #ffff00; }
+body.modo-contraste .menu a       { color: #ffff00; }
+body.modo-contraste a             { color: #00ff00; }
+/* Hero protegido */
+body.modo-contraste .hero-texto h1{ color: #f0f0f0; }
+body.modo-contraste .hero-texto p { color: #999999; }
+/* Filtros en alto contraste */
+body.modo-contraste .btn-filtro       { border-color: #ffff00; color: #ffff00; }
+body.modo-contraste .btn-filtro.activo{ background-color: #ffff00; color: #000; border-color: #ffff00; }
+
+
+/* =================================================================
+   15. RESPONSIVE — TABLET (max 900px)
+   ================================================================= */
+@media (max-width: 900px) {
+
+    /* El comparador pasa a 2 columnas */
+    .comparador-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .hero-texto h1 { font-size: 2.4rem; }
+}
+
+
+/* =================================================================
+   16. RESPONSIVE — MÓVIL (max 600px)
+   ================================================================= */
+@media (max-width: 600px) {
+
+    /* ── Navbar ── */
+
+    /* Mostramos el botón hamburguesa */
+    .btn-hamburguesa { display: flex; }
+
+    /* El menú se despliega debajo de la navbar como panel vertical */
+    .menu {
+        display: none;
+        flex-direction: column;
+        align-items: flex-start;
+        position: absolute;
+        top: var(--alto-navbar);        /* justo debajo de la navbar */
+        left: 0;
+        width: 100%;
+        background-color: rgba(8, 8, 8, 0.99);
+        padding: 16px 24px 24px;
+        border-top: 1px solid var(--rojo);
+        gap: 4px;
+        max-height: calc(100vh - var(--alto-navbar));
+        overflow-y: auto;               /* scroll si hay muchos enlaces */
+    }
+
+    /* El JS añade "visible" al pulsar el hamburguesa */
+    .menu.visible { display: flex; }
+
+    /* Los enlaces son más altos para facilitar el toque */
+    .menu > li { width: 100%; }
+    .menu > li > a {
+        font-size: 0.85rem;
+        padding: 12px 0;
+        display: block;
+        border-bottom: 1px solid #222;
+    }
+
+    /* El submenu en móvil NO flota — va en bloque dentro del menú */
+    .submenu {
+        position: static;
+        border: none;
+        border-left: 2px solid var(--rojo);
+        background-color: #111;
+        min-width: auto;
+        width: 100%;
+        border-radius: 0;
+        margin: 4px 0 8px 8px;
+    }
+
+    /* El hover de escritorio no afecta en móvil —
+       el JS usa la clase "abierto-sub" para abrir/cerrar */
+    .desplegable:hover .submenu { display: none; }
+    .desplegable.abierto-sub .submenu { display: block; }
+
+    /* ── Hero ── */
+    .hero-texto h1 {
+        font-size: 1.7rem;
+        letter-spacing: 1px;
+    }
+
+    .hero-texto p { font-size: 1rem; }
+
+    /* ── Secciones ── */
+    .seccion  { padding: 40px 16px; }
+    .interior { padding: 40px 16px; }
+    .titulo-seccion { font-size: 1.35rem; }
+
+    /* ── Tarjetas: 1 columna ── */
+    .grid-tarjetas { grid-template-columns: 1fr; }
+
+    /* ── Comparador: 1 columna — huecos vacíos más compactos ── */
+    .comparador-grid { grid-template-columns: 1fr; }
+    .hueco-comparador { min-height: 70px; font-size: 0.7rem; }
+
+    /* ── Contacto: 1 columna ── */
+    .contacto-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+
+    /* El mapa es más alto en móvil para verse mejor */
+    .mapa-iframe { height: 240px; }
+
+    /* ── Modal: foto arriba, datos abajo ── */
+    .modal-caja {
+        grid-template-columns: 1fr;
+        max-height: 85vh;
+    }
+
+    #modal-foto {
+        height: 170px;
+        min-height: 0;          /* sin mínimo — no desborda */
+    }
+
+    .modal-datos { padding: 16px; }
+}

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MenosQueCoches</title>
+    <meta name="description" content="Proyecto web MenosQueCoches: catálogo de coches, comparador, productos y formulario de contacto.">
+
+    <!-- Fuentes de Google: Orbitron para títulos, Rajdhani para el cuerpo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- Nuestro archivo de estilos -->
+    <link rel="stylesheet" href="Estilo.css">
+</head>
+
+<body>
+
+    <!-- ============================================================
+         BARRA DE NAVEGACIÓN
+         Fija en la parte de arriba (position:fixed en CSS).
+         El JS le añade la clase "scroll" al bajar 50px.
+         ============================================================ -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-contenedor">
+
+            <a href="#inicio" class="logo">
+                <img src="img/logo.png" alt="MenosQueCoches" class="logo-img">
+            </a>
+
+            <!-- Botón hamburguesa: solo visible en móvil (CSS lo oculta en escritorio) -->
+            <!-- El JS añade la clase "abierto" al pulsarlo -->
+            <button id="btn-menu"
+                    class="btn-hamburguesa"
+                    type="button"
+                    aria-label="Abrir menú"
+                    aria-controls="menu"
+                    aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <!-- Menú principal -->
+            <!-- En móvil está oculto. El JS le añade la clase "visible" -->
+            <ul class="menu" id="menu">
+                <li><a href="#catalogo">Catálogo</a></li>
+                <li><a href="#comparador">Comparar</a></li>
+                <li><a href="#productos">Productos</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+
+                <!-- Desplegable de accesibilidad -->
+                <!-- En escritorio: se abre con hover (CSS) -->
+                <!-- En móvil: el JS añade "abierto-sub" al pulsar el enlace -->
+                <li class="desplegable" id="desplegable-acc">
+                    <a href="#" id="btn-acc">Accesibilidad </a>
+                    <ul class="submenu">
+                        <!-- onclick llama a cambiarModo() del Script.js -->
+                        <li><button onclick="cambiarModo('claro')">Modo Claro</button></li>
+                        <li><button onclick="cambiarModo('oscuro')">Modo Oscuro</button></li>
+                        <li><button onclick="cambiarModo('contraste')">Alto Contraste</button></li>
+                    </ul>
+                </li>
+            </ul>
+
+        </div>
+    </nav>
+
+
+    <!-- ============================================================
+         PORTADA (hero)
+         margin-top en CSS la empuja justo debajo de la navbar.
+         El vídeo de fondo está en z-index:1 (detrás).
+         El texto está en z-index:2 (delante).
+         ============================================================ -->
+    <header id="inicio" class="hero">
+
+        <video autoplay muted loop playsinline class="hero-video">
+            <source src="vid/videoplayback.mp4" type="video/mp4">
+        </video>
+
+        <div class="hero-texto">
+            <h1>Pasión por el motor</h1>
+            <p>Catálogo de coches, productos de detailing y piezas.</p>
+            <a href="#catalogo" class="btn">Ver Catálogo</a>
+        </div>
+
+    </header>
+
+
+    <!-- ============================================================
+         CATÁLOGO DE COCHES
+         Sección normal — clase "seccion" limita a 1100px y centra.
+         ============================================================ -->
+    <section id="catalogo" class="seccion">
+
+        <h2 class="titulo-seccion">Catálogo de Coches</h2>
+
+        <!-- Filtros: data-filtro → el JS lo compara con data-categoria de cada tarjeta -->
+        <div class="filtros" id="filtros">
+            <button class="btn-filtro activo" data-filtro="todos">Todos</button>
+            <button class="btn-filtro" data-filtro="lujo">Lujo</button>
+            <button class="btn-filtro" data-filtro="deportivo">Deportivo</button>
+            <button class="btn-filtro" data-filtro="familiar">Familiar</button>
+        </div>
+
+        <div class="grid-tarjetas">
+
+            <!-- data-categoria → el JS lo lee para filtrar
+                 Al hacer clic en la tarjeta → el JS abre el modal
+                 Al hacer clic en "+ Comparar" → el JS añade al comparador -->
+
+            <article class="tarjeta" data-categoria="lujo">
+                <img src="img/galeria1.jpg" alt="Mercedes Maybach" class="tarjeta-foto">
+                <div class="tarjeta-info">
+                    <span class="etiqueta">Lujo</span>
+                    <h3>Mercedes-Benz Maybach</h3>
+                    <p>Preparación Mansory. Exclusivo para artistas o futbolistas.</p>
+                    <ul class="specs">
+                        <li><strong>Potencia:</strong> 630 CV</li>
+                        <li><strong>Precio:</strong> 600.000 €</li>
+                    </ul>
+                    <button class="btn-comparar" onclick="añadirAlComparador(this)">+ Comparar</button>
+                </div>
+            </article>
+
+            <article class="tarjeta" data-categoria="deportivo">
+                <img src="img/galeria2.jpg" alt="SEAT León Cupra" class="tarjeta-foto">
+                <div class="tarjeta-info">
+                    <span class="etiqueta">Deportivo</span>
+                    <h3>SEAT León Cupra FR</h3>
+                    <p>300 CV, llantas en cobre forjado. El deportivo por excelencia.</p>
+                    <ul class="specs">
+                        <li><strong>Potencia:</strong> 300 CV</li>
+                        <li><strong>Precio:</strong> 40.000 €</li>
+                    </ul>
+                    <button class="btn-comparar" onclick="añadirAlComparador(this)">+ Comparar</button>
+                </div>
+            </article>
+
+            <article class="tarjeta" data-categoria="deportivo">
+                <img src="img/galeria3.jpg" alt="BMW M4" class="tarjeta-foto">
+                <div class="tarjeta-info">
+                    <span class="etiqueta">Deportivo</span>
+                    <h3>BMW M4 Competition</h3>
+                    <p>Motor biturbo S58, tracción trasera. Paquete M Competition.</p>
+                    <ul class="specs">
+                        <li><strong>Potencia:</strong> 510 CV</li>
+                        <li><strong>Precio:</strong> 95.000 €</li>
+                    </ul>
+                    <button class="btn-comparar" onclick="añadirAlComparador(this)">+ Comparar</button>
+                </div>
+            </article>
+
+            <article class="tarjeta" data-categoria="lujo">
+                <img src="img/galeria7.jpg" alt="Alfa Romeo GT" class="tarjeta-foto">
+                <div class="tarjeta-info">
+                    <span class="etiqueta">Lujo</span>
+                    <h3>Alfa Romeo GT</h3>
+                    <p>Con suerte tiene las 4 ruedas rectas. Turbo a veces, no siempre.</p>
+                    <ul class="specs">
+                        <li><strong>Potencia:</strong> 174 CV</li>
+                        <li><strong>Precio:</strong> Incalculable</li>
+                    </ul>
+                    <button class="btn-comparar" onclick="añadirAlComparador(this)">+ Comparar</button>
+                </div>
+            </article>
+
+            <article class="tarjeta" data-categoria="familiar">
+                <img src="img/galeria6.jpg" alt="Citroën C4 Picasso" class="tarjeta-foto">
+                <div class="tarjeta-info">
+                    <span class="etiqueta">Familiar</span>
+                    <h3>Citroën C4 Picasso</h3>
+                    <p>Espacio para una familia entera. El clásico coche de papá.</p>
+                    <ul class="specs">
+                        <li><strong>Potencia:</strong> 115 CV</li>
+                        <li><strong>Precio:</strong> Negociable</li>
+                    </ul>
+                    <button class="btn-comparar" onclick="añadirAlComparador(this)">+ Comparar</button>
+                </div>
+            </article>
+
+            <article class="tarjeta" data-categoria="familiar">
+                <img src="img/galeria8.jpg" alt="SEAT Ibiza" class="tarjeta-foto">
+                <div class="tarjeta-info">
+                    <span class="etiqueta">Familiar</span>
+                    <h3>SEAT Ibiza</h3>
+                    <p>Conductor con Aura. Atrae las miradas a donde vayas.</p>
+                    <ul class="specs">
+                        <li><strong>Potencia:</strong> 120 CV</li>
+                        <li><strong>Precio:</strong> 18.000 €</li>
+                    </ul>
+                    <button class="btn-comparar" onclick="añadirAlComparador(this)">+ Comparar</button>
+                </div>
+            </article>
+
+        </div>
+    </section>
+
+
+    <!-- ============================================================
+         COMPARADOR DE COCHES
+         Sección con fondo oscuro.
+         Estructura: <section class="fondo-oscuro"> + <div class="interior">
+         Así el fondo llega de borde a borde pero el contenido queda centrado.
+         ============================================================ -->
+    <section id="comparador" class="fondo-oscuro">
+        <div class="interior">
+
+            <h2 class="titulo-seccion">Comparador</h2>
+            <p class="subtitulo-comparador">Pulsa "+ Comparar" en hasta 3 coches del catálogo</p>
+
+            <!-- Los 3 huecos — el JS los rellena con datos del coche -->
+            <div class="comparador-grid" id="comparador-grid">
+                <div class="hueco-comparador" id="hueco-0">Añade un coche</div>
+                <div class="hueco-comparador" id="hueco-1">Añade un coche</div>
+                <div class="hueco-comparador" id="hueco-2">Añade un coche</div>
+            </div>
+
+            <!-- Oculto hasta que haya algo en el comparador -->
+            <button class="btn btn-outline" id="btn-limpiar"
+                    onclick="limpiarComparador()"
+                    style="display:none; margin-top:1.5rem;">
+                Limpiar comparador
+            </button>
+
+        </div>
+    </section>
+
+
+    <!-- ============================================================
+         PRODUCTOS DE DETAILING
+         Sección normal — sin JavaScript
+         ============================================================ -->
+    <section id="productos" class="seccion">
+
+        <h2 class="titulo-seccion">Productos de Detailing</h2>
+
+        <div class="grid-tarjetas">
+
+            <article class="tarjeta">
+                <img src="img/productos.jpg" alt="Cera Cerámica" class="tarjeta-foto">
+                <div class="tarjeta-info">
+                    <span class="etiqueta">Protección</span>
+                    <h3>Tratamiento Cerámico 9H</h3>
+                    <p>Sellado de última generación. Hasta 18 meses de protección.</p>
+                    <div class="pie-tarjeta">
+                        <span class="precio">55 €</span>
+                        <a href="https://fullcarx.com/es/" target="_blank" rel="noopener" class="btn btn-outline">Ver producto</a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="tarjeta">
+                <img src="img/productos.jpg" alt="Kit APC" class="tarjeta-foto">
+                <div class="tarjeta-info">
+                    <span class="etiqueta">Interior</span>
+                    <h3>Kit APC + Microfibras</h3>
+                    <p>Limpiador universal para tapicerías, plásticos y goma.</p>
+                    <div class="pie-tarjeta">
+                        <span class="precio">24 €</span>
+                        <a href="https://fullcarx.com/es/" target="_blank" rel="noopener" class="btn btn-outline">Ver producto</a>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+    </section>
+
+
+    <!-- ============================================================
+         CONTACTO
+         Sección con fondo oscuro — misma estructura que el comparador.
+         El formulario usa Formspree para enviar emails reales.
+         ============================================================ -->
+    <section id="contacto" class="fondo-oscuro">
+        <div class="interior">
+
+            <h2 class="titulo-seccion">Contacto</h2>
+
+            <div class="contacto-grid">
+
+                <!-- Columna izquierda: formulario -->
+                <div>
+                    <h3>Déjanos tu opinión</h3>
+
+                    <!--
+                        FORMULARIO DE CONTACTO:
+                        - Funciona con Formspree si sustituyes XXXXXXXX por tu endpoint real.
+                        - Si no hay endpoint real, el JavaScript usa mailto como fallback.
+                        novalidate → el navegador no valida — lo hace nuestro JS
+                    -->
+                    <form id="formulario"
+                          action="https://formspree.io/f/XXXXXXXX"
+                          method="POST"
+                          data-email-destino="juan.araque2@educa.madrid.org"
+                          novalidate>
+
+                        <div class="campo">
+                            <label for="nombre">Nombre</label>
+                            <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" autocomplete="name">
+                            <span class="error" id="error-nombre"></span>
+                        </div>
+
+                        <div class="campo">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" placeholder="correo@ejemplo.com" autocomplete="email" inputmode="email">
+                            <span class="error" id="error-email"></span>
+                        </div>
+
+                        <div class="campo">
+                            <label for="mensaje">Mensaje</label>
+                            <textarea id="mensaje" name="mensaje" rows="4" placeholder="Escribe tu mensaje..." autocomplete="off"></textarea>
+                            <span class="error" id="error-mensaje"></span>
+                        </div>
+
+                        <!-- El JS rellena este párrafo con el resultado del envío -->
+                        <p id="estado-formulario" role="status" aria-live="polite"></p>
+
+                        <button type="submit" class="btn">Enviar Mensaje</button>
+
+                    </form>
+                </div>
+
+                <!-- Columna derecha: ubicación y mapa -->
+                <div>
+                    <h3>Dónde estamos</h3>
+                    <p><strong>Email:</strong> juan.araque2@educa.madrid.org</p>
+                    <p style="margin-top:6px"><strong>Ubicación:</strong> Valmo Garage · Madrid</p>
+
+                    <!-- Clase mapa-iframe para controlar el tamaño en responsive -->
+                    <iframe
+                        class="mapa-iframe"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7243.734086452638!2d-3.746843707063163!3d40.239861339149364!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd418bf0380a79d7%3A0xbbee8e0fe77c7b05!2sValmo%20Garage!5e0!3m2!1ses!2ses!4v1774388964749!5m2!1ses!2ses"
+                        loading="lazy"
+                        allowfullscreen
+                        referrerpolicy="no-referrer-when-downgrade"
+                        title="Valmo Garage en Google Maps">
+                    </iframe>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ============================================================
+         PIE DE PÁGINA
+         ============================================================ -->
+    <footer>
+        <p>© 2026 — MenosQueCoches</p>
+    </footer>
+
+
+    <!-- ============================================================
+         MODAL — ventana emergente con detalles del coche
+         display:none en CSS. El JS añade "visible" para mostrarlo.
+         ============================================================ -->
+    <div id="modal" class="modal">
+        <div class="modal-caja">
+            <button class="modal-cerrar" id="btn-cerrar-modal">✕</button>
+            <img id="modal-foto" src="" alt="">
+            <div class="modal-datos">
+                <span class="etiqueta" id="modal-etiqueta"></span>
+                <h2 id="modal-titulo"></h2>
+                <p id="modal-descripcion"></p>
+                <ul class="specs" id="modal-specs"></ul>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ============================================================
+         BOTÓN VOLVER ARRIBA
+         opacity:0 en CSS. El JS añade "visible" al bajar 400px.
+         ============================================================ -->
+    <button id="btn-arriba" class="btn-arriba" aria-label="Volver arriba">↑</button>
+
+
+    <!-- Script al final del body: así el HTML ya está cargado cuando el JS se ejecuta -->
+    <script src="Script.js"></script>
+
+</body>
+</html>
