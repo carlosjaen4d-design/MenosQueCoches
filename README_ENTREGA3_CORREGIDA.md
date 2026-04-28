@@ -6,8 +6,8 @@
 2. Se mantiene la estructura HTML/CSS/JS original de la tercera entrega.
 3. Se ha añadido una meta descripción básica en el HTML.
 4. Se ha mejorado el formulario de contacto:
-   - El formulario envía los datos a un endpoint serverless en Vercel (`/api/contact`).
-   - El endpoint crea una incidencia privada en GitHub para guardar cada mensaje sin exponer datos en el repositorio público.
+   - El formulario envía los datos a FormSubmit para que lleguen al correo configurado.
+   - El destinatario actual es `carlos.jaen.4d@gmail.com`.
 5. Se han añadido atributos útiles para móvil en los campos del formulario: `autocomplete` e `inputmode="email"`.
 6. Se han añadido pequeños ajustes CSS para imágenes, vídeos, iframes y uso táctil en móvil.
 7. Se ha ajustado `vercel.json` para una publicación estática sencilla.
@@ -30,16 +30,13 @@ Abre `index.html` con Live Server en VS Code. No lo abras directamente con doble
 
 - Web pública: `https://menosquecoches.vercel.app`
 - Repositorio principal: `https://github.com/carlosjaen4d-design/MenosQueCoches`
-- Repositorio privado de mensajes: `carlosjaen4d-design/MenosQueCoches-contacto`
-
 ## Formulario de contacto
 
-Ahora mismo el formulario queda operativo sin depender de Formspree:
+Ahora mismo el formulario queda preparado para enviar al correo:
 
-1. El frontend envía los datos a `/api/contact`.
-2. La función serverless usa variables de entorno en Vercel.
-3. Cada envío se guarda como incidencia privada en `carlosjaen4d-design/MenosQueCoches-contacto`.
-4. El proyecto público `MenosQueCoches` queda separado de los mensajes recibidos.
+1. El frontend envía los datos a `https://formsubmit.co/ajax/carlos.jaen.4d@gmail.com`.
+2. FormSubmit requiere una activación inicial desde el correo receptor la primera vez.
+3. Después de confirmar esa activación, los mensajes llegarán a `carlos.jaen.4d@gmail.com`.
 
 ## Código QR
 

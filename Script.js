@@ -10,7 +10,7 @@
   3. MODO ACCESIBILIDAD  → cambia los colores de la página
   4. FILTROS DEL CATÁLOGO → muestra/oculta tarjetas por categoría
   5. MODAL               → abre una ventana con los detalles del coche
-  6. FORMULARIO          → valida los campos y envía el mensaje
+   6. FORMULARIO          → valida los campos y envía el mensaje por email
   7. COMPARADOR          → compara hasta 3 coches lado a lado
   8. BOTÓN VOLVER ARRIBA → aparece cuando el usuario baja la página
 
@@ -321,7 +321,7 @@ function cerrarModal() {
 /* =================================================================
    6. FORMULARIO DE CONTACTO
    Validamos los campos antes de enviar.
-   Si todo está bien, enviamos los datos a nuestro endpoint en Vercel.
+   Si todo está bien, enviamos los datos a FormSubmit.
    ================================================================= */
 
 var formulario        = document.getElementById("formulario");
@@ -398,39 +398,44 @@ formulario.addEventListener("submit", async function(evento) {
         return;
     }
 
-    // Todo bien → intentamos enviar al endpoint de contacto
+    // Todo bien → intentamos enviar a FormSubmit
     estadoFormulario.textContent = "Enviando...";
     estadoFormulario.className   = "";
 
     try {
-        var datosFormulario = {
-            nombre: campoNombre.value.trim(),
-            email: campoEmail.value.trim(),
-            mensaje: campoMensaje.value.trim()
-        };
+        var campoReplyTo = document.getElementById("replyto");
+        var datosFormulario = new FormData(formulario);
+
+        if (campoReplyTo) {
+            campoReplyTo.value = campoEmail.value.trim();
+            datosFormulario.set("_replyto", campoEmail.value.trim());
+        }
 
         var respuesta = await fetch(formulario.action, {
             method:  "POST",
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(datosFormulario)
+            headers: { "Accept": "application/json" },
+            body: datosFormulario
         });
 
         var resultado = await respuesta.json().catch(function() {
             return {};
         });
 
-        if (respuesta.ok) {
+        var activacionPendiente = String(resultado.success) === "false" &&
+            String(resultado.message || "").toLowerCase().indexOf("activation") !== -1;
+
+        if (respuesta.ok && !activacionPendiente) {
             // El envío funcionó
-            estadoFormulario.textContent = resultado.message || "Mensaje enviado. Te contestaremos pronto.";
+            estadoFormulario.textContent = resultado.message || "Mensaje enviado. Revisa el correo de destino para confirmar la activación si es la primera vez.";
             estadoFormulario.className   = "ok";
             formulario.reset();  // vaciamos el formulario
             // Quitamos los bordes de color de los campos
             [campoNombre, campoEmail, campoMensaje].forEach(function(c) {
                 c.classList.remove("ok-campo", "error-campo");
             });
+        } else if (activacionPendiente) {
+            estadoFormulario.textContent = "El formulario ya ha enviado el correo de activación a carlos.jaen.4d@gmail.com. Hay que pulsar ese enlace una sola vez para empezar a recibir mensajes.";
+            estadoFormulario.className   = "ok";
         } else {
             throw new Error(resultado.error || "Error del servidor");
         }

@@ -273,7 +273,7 @@
     <!-- ============================================================
          CONTACTO
          Sección con fondo oscuro — misma estructura que el comparador.
-         El formulario usa un endpoint propio en Vercel para registrar mensajes reales.
+         El formulario usa FormSubmit para enviar mensajes reales al correo configurado.
          ============================================================ -->
     <section id="contacto" class="fondo-oscuro">
         <div class="interior">
@@ -288,15 +288,20 @@
 
                     <!--
                         FORMULARIO DE CONTACTO:
-                        - Envía los datos a /api/contact dentro del mismo proyecto.
-                        - El endpoint del servidor registra cada envío de forma privada.
+                        - Envía los datos a FormSubmit para que lleguen al correo configurado.
+                        - La primera activación del formulario se confirma desde el correo receptor.
                         novalidate → el navegador no valida — lo hace nuestro JS
                     -->
                     <form id="formulario"
-                          action="/api/contact"
+                          action="https://formsubmit.co/ajax/carlos.jaen.4d@gmail.com"
                           method="POST"
-                          data-email-destino="juan.araque2@educa.madrid.org"
                           novalidate>
+
+                        <input type="hidden" name="_subject" value="Nuevo contacto desde MenosQueCoches">
+                        <input type="hidden" name="_template" value="table">
+                        <input type="hidden" name="_url" value="https://menosquecoches.vercel.app/contacto">
+                        <input type="text" name="_honey" tabindex="-1" autocomplete="off" style="display:none">
+                        <input type="hidden" id="replyto" name="_replyto" value="">
 
                         <div class="campo">
                             <label for="nombre">Nombre</label>
