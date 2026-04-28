@@ -26,6 +26,12 @@ Abre `index.html` con Live Server en VS Code. No lo abras directamente con doble
 6. Output directory: dejar vacío o raíz del proyecto.
 7. Deploy.
 
+## Estado actual
+
+- Web pública: `https://menosquecoches.vercel.app`
+- Repositorio principal: `https://github.com/carlosjaen4d-design/MenosQueCoches`
+- Repositorio privado de mensajes: `carlosjaen4d-design/MenosQueCoches-contacto`
+
 ## Formulario de contacto
 
 Ahora mismo el formulario queda operativo sin depender de Formspree:
@@ -37,9 +43,13 @@ Ahora mismo el formulario queda operativo sin depender de Formspree:
 
 ## Código QR
 
-El QR debe generarse después de publicar la web en Vercel. El QR debe apuntar a la URL pública, por ejemplo:
+El QR ya está generado y apunta a la URL pública:
 
-`https://menos-que-coches.vercel.app`
+`https://menosquecoches.vercel.app`
+
+Archivo:
+
+`img/qr-menosquecoches.png`
 
 ## Compatibilidad móvil
 
